@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../../providers/auth_provider.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -52,28 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SignupScreen()),
-                );
+                Navigator.pushReplacementNamed(context, "/signup");
               },
               child: const Text('Sign Up'),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
-      body: Center(child: Text('Signup Screen - To be implemented')),
     );
   }
 }
