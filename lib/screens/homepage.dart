@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:flat_match/providers/auth_provider.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -9,33 +12,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    _checkDataCompleteness();
-  }
+  Map<String, dynamic> userData = {};
 
-  Future<void> _checkDataCompleteness() async {
-    final bool isDataComplete = await _isUserDataComplete();
+  Future<void> _getUserData() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userUid = authProvider.uid;
 
-    if (!isDataComplete) {
-      if (!mounted) return;
-      Navigator.pushNamed(context, '/complete-registration');
+    final docSnapshot = await FirebaseFirestore.instance.collection("users").doc(userUid).get();
+
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      final Map<String, dynamic> data = docSnapshot.data()!;
+      setState(() {
+        userData["test"] = data["test"];
+      });
+    }
+
+    if (userData["test"] == "1") {
+      Navigator.pushNamed(context, "/complete-registration", arguments: _getUserData);
     }
   }
 
-  Future<bool> _isUserDataComplete() async {
-    return false;
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Page"),
-      ),
+      appBar: AppBar(title: const Text("Home Page"), automaticallyImplyLeading: false),
       body: Center(
-        child: Text("Home Page"),
+        child: Text("Home Page - ${userData["test"]}"),
       ),
     );
   }

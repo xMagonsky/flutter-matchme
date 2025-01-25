@@ -36,9 +36,20 @@ class FlatMatch extends StatelessWidget {
           "/login": (context) => const LoginScreen(),
           "/register": (context) => const SignupScreen(),
           "/home": (context) => const HomePage(),
-          "/complete-registration": (context) => const CompleteRegistration(),
-          "/test": (context) => Test(),
-        }
+        },
+        // Dynamic route handler:
+        onGenerateRoute: (settings) {
+          if (settings.name == '/complete-registration') {
+            final callback = settings.arguments as VoidCallback;
+
+            return MaterialPageRoute(
+              builder: (context) => CompleteRegistration(
+                updateUserCallback: callback,
+              ),
+            );
+          }
+          return null; // Defer to routes table if not handled here
+        },
       )
     );
   }
@@ -60,14 +71,5 @@ class AuthWrapper extends StatelessWidget {
     });
 
     return const Center(child: CircularProgressIndicator());
-  }
-}
-
-class Test extends StatelessWidget {
-  const Test({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Test123"));
   }
 }

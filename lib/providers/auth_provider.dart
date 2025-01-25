@@ -15,7 +15,7 @@ class AuthProvider extends ChangeNotifier {
   }
   // Stream<User?> get authState => _authService.authStateChanges;
 
-  // User? get user => _user;
+  String? get uid => _user?.uid;
   bool get isLoggedIn => _user != null;
 
   void _setUser(User? user) {

@@ -2,10 +2,27 @@ import 'package:flutter/material.dart';
 
 
 class CompleteRegistration extends StatelessWidget {
-  const CompleteRegistration({super.key});
+  final dynamic updateUserCallback;
+
+  const CompleteRegistration({super.key, required this.updateUserCallback});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("complete registerenan"));
+    return Scaffold(
+      appBar: AppBar(title: const Text("Complete registration"), automaticallyImplyLeading: false),
+      body: Center(
+        child: Column(
+          children: [
+            Text("Complete registration!"),
+            ElevatedButton(
+              onPressed: () async {
+                updateUserCallback();
+                Navigator.pop(context);
+              },
+              child: const Text("Back?"),
+            ),
+          ],)
+      ),
+    );
   }
 }
