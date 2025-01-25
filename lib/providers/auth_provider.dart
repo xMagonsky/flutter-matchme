@@ -6,27 +6,36 @@ class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
   User? _user;
 
-  User? get user => _user;
+  AuthProvider() {
+    print("hello");
+    _authService.authStateChanges.listen((User? user) {
+      print(user);
+      _setUser(user);
+    });
+  }
+  // Stream<User?> get authState => _authService.authStateChanges;
 
-  void setUser(User? user) {
+  // User? get user => _user;
+  bool get isLoggedIn => _user != null;
+
+  void _setUser(User? user) {
     _user = user;
     notifyListeners();
   }
 
   Future<void> signUp(String email, String password) async {
     User? user = await _authService.signUp(email, password);
-    setUser(user);
+    _setUser(user);
   }
 
   Future<void> logIn(String email, String password) async {
     User? user = await _authService.logIn(email, password);
-    setUser(user);
+    _setUser(user);
   }
 
   Future<void> logOut() async {
     await _authService.logOut();
-    setUser(null);
+    _setUser(null);
   }
 
-  Stream<User?> get authState => _authService.authStateChanges;
 }
