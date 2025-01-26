@@ -40,15 +40,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(title: const Text("Home Page"), automaticallyImplyLeading: false),
       body: Center(
-        child: Text("Home Page - ${userData["test"]}"),
+        child: Column(
+          children: [
+            Text("Home Page - ${userData["test"]}"),
+            ElevatedButton(
+              child: const Text('Logout'),
+              onPressed: () => authProvider.logOut(),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
 
 // class HomeScreen extends StatelessWidget {
 //   const HomeScreen({super.key});

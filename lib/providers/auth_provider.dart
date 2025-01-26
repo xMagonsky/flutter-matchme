@@ -7,8 +7,8 @@ class AuthProvider extends ChangeNotifier {
   User? _user;
 
   AuthProvider() {
-    print("hello");
     _authService.authStateChanges.listen((User? user) {
+      print("State changed:");
       print(user);
       _setUser(user);
     });

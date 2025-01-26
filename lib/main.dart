@@ -34,7 +34,7 @@ class FlatMatch extends StatelessWidget {
         routes: {
           "/": (context) => const AuthWrapper(),
           "/login": (context) => const LoginScreen(),
-          "/register": (context) => const SignupScreen(),
+          "/signup": (context) => const Signup(),
           "/home": (context) => const HomePage(),
         },
         // Dynamic route handler:
