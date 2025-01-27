@@ -18,11 +18,35 @@ class _SwipingState extends State<Swiping> {
   ];
 
   final CardSwiperController _controller = CardSwiperController();
+  bool _isFetching = false;
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _openDetailsPage() {
+    Navigator.pushNamed(context, "/offer-details", arguments: {"name": "patryczek", "age": 15});
+  }
+
+  void _fetchMoreCards() async {
+    if (_isFetching) return;
+
+    setState(() {
+      _isFetching = true;
+    });
+
+    // await Future.delayed(const Duration(seconds: 1));
+    final List<String> newCards = List.generate(
+      5,
+      (index) => 'https://picsum.photos/seed/new_picsum${index + 1}/400/600',
+    );
+
+    setState(() {
+      _images.addAll(newCards);
+      _isFetching = false;
+    });
   }
 
   @override
@@ -35,10 +59,10 @@ class _SwipingState extends State<Swiping> {
                 child: CardSwiper(
                   controller: _controller,
                   cardsCount: _images.length,
-                  isLoop: true,
+                  isLoop: false,
                   backCardOffset: const Offset(0, 35),
                   numberOfCardsDisplayed: 2,
-                  allowedSwipeDirection: AllowedSwipeDirection.symmetric(horizontal: true),
+                  allowedSwipeDirection: AllowedSwipeDirection.only(left: true, right: true, up: true),
                   onSwipe: _onSwipe,
                   onUndo: _onUndo,
                   cardBuilder: (
@@ -46,7 +70,7 @@ class _SwipingState extends State<Swiping> {
                     index, 
                     horizontalThresholdPercentage, 
                     verticalThresholdPercentage
-                  ) => SwipingCard(imageUrl: _images[index],),
+                  ) => SwipingCard(imageUrl: _images[index], openDetailsCallback: _openDetailsPage,),
                 ),
               
             ),
@@ -78,6 +102,14 @@ class _SwipingState extends State<Swiping> {
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
+    if (direction == CardSwiperDirection.top) {
+      _openDetailsPage();
+    }
+
+    if (currentIndex == null || currentIndex == _images.length - 1) {
+      _fetchMoreCards();
+    }
+
     debugPrint(
       'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
     );
@@ -98,14 +130,18 @@ class _SwipingState extends State<Swiping> {
 
 
 class SwipingCard extends StatelessWidget {
-  const SwipingCard({required this.imageUrl, super.key});
+  const SwipingCard({required this.imageUrl, required this.openDetailsCallback, super.key});
 
   final String imageUrl;
+  
+  final Function openDetailsCallback;
   
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => print("aaaqaaaaa"),
+      onTap: () {
+        openDetailsCallback();
+      },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

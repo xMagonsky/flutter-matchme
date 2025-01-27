@@ -43,7 +43,19 @@ class FlatMatch extends StatelessWidget {
             "/login": (context) => const LoginScreen(),
             "/signup": (context) => const Signup(),
             "/complete-registration": (context) => const CompleteRegistration(),
-            "/offer-details": (context) => const OfferDetails(),
+          },
+          // Dynamic route handler:
+          onGenerateRoute: (settings) {
+            if (settings.name == '/offer-details') {
+              final userInfo = settings.arguments as Map<String, dynamic>;
+
+              return MaterialPageRoute(
+                builder: (context) => OfferDetails(
+                  userInfo: userInfo,
+                ),
+              );
+            }
+            return null; // Defer to routes table if not handled here
           },
         );
       })

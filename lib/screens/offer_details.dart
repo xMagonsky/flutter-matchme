@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import 'package:flat_match/providers/auth_provider.dart';
 
 
 class OfferDetails extends StatelessWidget {
-  const OfferDetails({super.key});
+  final Map<String, dynamic> userInfo;
+
+  const OfferDetails({required this.userInfo, super.key});
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Home Page"), automaticallyImplyLeading: false),
+      appBar: AppBar(title: const Text("Details page")),
       body: Center(
-        child: Text("hello offer"),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Back"),
+            ),
+            Text(userInfo.toString()),
+          ],
         ),
+      )
     );
   }
 }
