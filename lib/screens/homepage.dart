@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:flat_match/providers/auth_provider.dart';
+import 'package:flat_match/widgets/card_swiper.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (userData["test"] == "1") {
-      Navigator.pushNamed(context, "/complete-registration", arguments: _getUserData);
+      Navigator.pushReplacementNamed(context, "/complete-registration");
     }
   }
 
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Home Page"), automaticallyImplyLeading: false),
       body: Center(
@@ -51,41 +53,10 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Logout'),
               onPressed: () => authProvider.logOut(),
             ),
+            Swiping(),
           ],
         ),
       ),
     );
   }
 }
-
-// class HomeScreen extends StatelessWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // final authProvider = Provider.of<AuthProvider>(context);
-
-//     return Column(children: [
-//       Text("Home screen"),
-//       ElevatedButton(
-//         onPressed: () async {
-//           try {
-//             // await authProvider.logOut();
-//           } catch (e) {
-//             if (!context.mounted) return;
-//             ScaffoldMessenger.of(context).showSnackBar(
-//               SnackBar(content: Text(e.toString())),
-//             );
-//           }
-//         },
-//         child: const Text('Logout'),
-//       ),
-//       ElevatedButton(
-//         onPressed: () async {
-//           Navigator.pushNamed(context, "/second");
-//         },
-//         child: const Text('Second screen'),
-//       ),
-//     ],);
-//   }
-// }

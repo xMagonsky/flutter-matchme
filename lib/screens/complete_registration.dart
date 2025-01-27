@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class CompleteRegistration extends StatelessWidget {
-  final dynamic updateUserCallback;
-
-  const CompleteRegistration({super.key, required this.updateUserCallback});
+  const CompleteRegistration({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +14,7 @@ class CompleteRegistration extends StatelessWidget {
             Text("Complete registration!"),
             ElevatedButton(
               onPressed: () async {
-                updateUserCallback();
-                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, "/");
               },
               child: const Text("Back?"),
             ),

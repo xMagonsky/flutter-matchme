@@ -8,6 +8,7 @@ import 'package:flat_match/screens/authentication/signup.dart';
 import 'package:flat_match/screens/authentication/login.dart';
 import 'package:flat_match/screens/homepage.dart';
 import 'package:flat_match/screens/complete_registration.dart';
+import 'package:flat_match/screens/offer_details.dart';
 
 
 void main() async {
@@ -27,49 +28,25 @@ class FlatMatch extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MaterialApp(
-        title: "Flat Match",
-        theme: ThemeData(primarySwatch: Colors.red),
-        initialRoute: "/",
-        routes: {
-          "/": (context) => const AuthWrapper(),
-          "/login": (context) => const LoginScreen(),
-          "/signup": (context) => const Signup(),
-          "/home": (context) => const HomePage(),
-        },
-        // Dynamic route handler:
-        onGenerateRoute: (settings) {
-          if (settings.name == '/complete-registration') {
-            final callback = settings.arguments as VoidCallback;
+      child: Builder(builder: (context) {
+        final authProvider = Provider.of<AuthProvider>(context);
 
-            return MaterialPageRoute(
-              builder: (context) => CompleteRegistration(
-                updateUserCallback: callback,
-              ),
-            );
-          }
-          return null; // Defer to routes table if not handled here
-        },
-      )
+        return MaterialApp(
+          title: "Flat Match",
+          theme: ThemeData(
+            useMaterial3: true,
+            primarySwatch: Colors.red,
+          ),
+          home: authProvider.isLoggedIn ? HomePage() : LoginScreen(),
+          routes: {
+            "/home": (context) => const HomePage(),
+            "/login": (context) => const LoginScreen(),
+            "/signup": (context) => const Signup(),
+            "/complete-registration": (context) => const CompleteRegistration(),
+            "/offer-details": (context) => const OfferDetails(),
+          },
+        );
+      })
     );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (authProvider.isLoggedIn) {
-        Navigator.pushNamedAndRemoveUntil(context, "/home", ModalRoute.withName('/'));
-      } else {
-        Navigator.pushNamedAndRemoveUntil(context, "/login", ModalRoute.withName('/'));
-      }
-    });
-
-    return const Center(child: CircularProgressIndicator());
   }
 }
