@@ -103,6 +103,7 @@ class _SwipingState extends State<Swiping> {
     CardSwiperDirection direction,
   ) {
     if (direction == CardSwiperDirection.top) {
+      _controller.undo();
       _openDetailsPage();
     }
 
