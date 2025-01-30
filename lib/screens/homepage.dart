@@ -24,11 +24,11 @@ class _HomePageState extends State<HomePage> {
     if (docSnapshot.exists && docSnapshot.data() != null) {
       final Map<String, dynamic> data = docSnapshot.data()!;
       setState(() {
-        userData["test"] = data["test"];
+        userData["test"] = data["offerID"];
       });
     }
-
-    if (userData["test"] == "1") {
+    
+    if (userData["test"] == null) {
       Navigator.pushReplacementNamed(context, "/complete-registration");
     }
   }
