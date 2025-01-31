@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 child: const Text('Settings'),
-                onPressed: () => authProvider.logOut(),
+                onPressed: () => Navigator.pushNamed(context, "/user-settings"),
               ),
             ],),
             Swiping(),

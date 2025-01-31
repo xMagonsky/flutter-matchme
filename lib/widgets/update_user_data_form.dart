@@ -11,17 +11,18 @@ class UpdateUserDataForm extends StatefulWidget {
 
 class _CompleteRegistrationState extends State<UpdateUserDataForm> {
   final _formKey = GlobalKey<FormState>();
-  String name = '';
-  String surname = '';
-  String gender = '';
-  int age = 0;
-  String description = '';
-  String userType = '';
+  // Provide default values
+  String name = 'John';
+  String surname = 'Doe';
+  String gender = 'Male';
+  int age = 25;
+  String description = 'Short description about yourself...';
+  String userType = 'Seeker';
 
-  String apartmentDescription = '';
-  String location = '';
-  String locationRange = '';
-  String petPreference = '';
+  String apartmentDescription = 'A cozy apartment...';
+  String location = 'New York';
+  String locationRange = '10 km';
+  String petPreference = 'Yes';
 
   bool _userTypeError = false;
 
@@ -78,6 +79,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                initialValue: name,
                 decoration: InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(
@@ -90,6 +92,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                initialValue: surname,
                 decoration: InputDecoration(
                   labelText: 'Surname',
                   border: OutlineInputBorder(
@@ -102,6 +105,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                initialValue: age.toString(),
                 decoration: InputDecoration(
                   labelText: 'Age',
                   border: OutlineInputBorder(
@@ -115,6 +119,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                value: gender,
                 decoration: InputDecoration(
                   labelText: 'Gender',
                   border: OutlineInputBorder(
@@ -133,6 +138,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                initialValue: description,
                 decoration: InputDecoration(
                   labelText: 'Description',
                   border: OutlineInputBorder(
@@ -228,11 +234,12 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               const SizedBox(height: 16),
               if (userType.isNotEmpty)
                 Column(
-                  children: [      
+                  children: [
                     if(userType == "Tenant")
                       Column(
                         children: [
                           TextFormField(
+                            initialValue: apartmentDescription,
                             decoration: InputDecoration(
                               labelText: 'Apartment Description',
                               border: OutlineInputBorder(
@@ -248,6 +255,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                         ],
                       ),
                     TextFormField(
+                      initialValue: location,
                       decoration: InputDecoration(
                         labelText: userType == 'Seeker' ? 'Search location' : 'Apartament location',
                         border: OutlineInputBorder(
@@ -261,6 +269,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                     const SizedBox(height: 16),
                     if (userType == 'Seeker')
                       TextFormField(
+                        initialValue: locationRange,
                         decoration: InputDecoration(
                           labelText: 'Preferred Location Range',
                           border: OutlineInputBorder(
@@ -274,6 +283,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                     if (userType == 'Seeker')
                       const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
+                      value: petPreference,
                       decoration: InputDecoration(
                         labelText: userType == 'Seeker' ? 'Do you have a pet?' : 'Do you accept pets?',
                         border: OutlineInputBorder(

@@ -26,7 +26,7 @@ class _UserSettingsState extends State<UserSettings> {
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration Complete!')),
+        const SnackBar(content: Text('Settings updated!')),
       );
 
       Navigator.pop(context);

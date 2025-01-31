@@ -9,6 +9,7 @@ import 'package:flat_match/screens/authentication/login.dart';
 import 'package:flat_match/screens/homepage.dart';
 import 'package:flat_match/screens/complete_registration.dart';
 import 'package:flat_match/screens/offer_details.dart';
+import 'package:flat_match/screens/user_settings.dart';
 
 
 void main() async {
@@ -44,6 +45,7 @@ class FlatMatch extends StatelessWidget {
             "/login": (context) => const LoginScreen(),
             "/signup": (context) => const Signup(),
             "/complete-registration": (context) => const CompleteRegistration(),
+            "/user-settings": (context) => const UserSettings(),
           },
           // Dynamic route handler:
           onGenerateRoute: (settings) {
