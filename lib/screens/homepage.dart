@@ -17,20 +17,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _getUserData() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final userUid = authProvider.uid;
+    final docSnapshot = await FirebaseFirestore.instance.collection("users").doc(authProvider.uid).get();
+    final data = docSnapshot.data();
 
-    final docSnapshot = await FirebaseFirestore.instance.collection("users").doc(userUid).get();
+    if (data == null || data["name"] == null) {
+      if (mounted) Navigator.pushReplacementNamed(context, "/complete-registration");
+      return;
+    }
 
-    if (docSnapshot.exists && docSnapshot.data() != null) {
-      final Map<String, dynamic> data = docSnapshot.data()!;
-      setState(() {
-        userData["test"] = data["offerID"];
-      });
-    }
-    
-    if (userData["test"] == null) {
-      Navigator.pushReplacementNamed(context, "/complete-registration");
-    }
+    setState(() {
+      userData = data;
+    });
   }
 
   @override

@@ -30,6 +30,7 @@ class FlatMatch extends StatelessWidget {
       ],
       child: Builder(builder: (context) {
         final authProvider = Provider.of<AuthProvider>(context);
+        debugPrint("hello");
 
         return MaterialApp(
           title: "Flat Match",
@@ -37,7 +38,7 @@ class FlatMatch extends StatelessWidget {
             useMaterial3: true,
             primarySwatch: Colors.red,
           ),
-          home: authProvider.isLoggedIn ? HomePage() : LoginScreen(),
+          home: authProvider.isLoggedIn ? const HomePage() : const LoginScreen(),
           routes: {
             "/home": (context) => const HomePage(),
             "/login": (context) => const LoginScreen(),

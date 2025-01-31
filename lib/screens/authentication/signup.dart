@@ -70,7 +70,7 @@ class _SignupState extends State<Signup> {
         setState(() {
           _isLoading = false;
         });
-        Navigator.pushNamedAndRemoveUntil(context, "/", (Route<dynamic> route) => false);
+        if (context.mounted) Navigator.pushNamedAndRemoveUntil(context, "/complete-registration", (Route<dynamic> route) => false);
       }
     }
   }

@@ -15,20 +15,20 @@ class CompleteRegistration extends StatefulWidget {
 class _CompleteRegistrationState extends State<CompleteRegistration> {
 
   void onSubmit(Map<String, dynamic> userData) async {
-    debugPrint(userData.toString());
-
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
     userData["uid"] = authProvider.uid;
-    DocumentReference docRef = await FirebaseFirestore.instance.collection('offers').add(userData);
+    await FirebaseFirestore.instance.collection("users").doc(authProvider.uid).set({
+      "name": userData["name"],
+      "surname": userData["surname"],
+    });
+    await FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).set(userData);
     
-    FirebaseFirestore.instance.collection('users').doc(authProvider.uid).update({"offerID": docRef.id});
-
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Registration Complete!')),
       );
-    
+
       Navigator.pushReplacementNamed(context, '/');
     }
   }

@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flat_match/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:provider/provider.dart';
 
 class Swiping extends StatefulWidget {
   const Swiping({super.key});
@@ -9,16 +12,16 @@ class Swiping extends StatefulWidget {
 }
 
 class _SwipingState extends State<Swiping> {
-  final List<String> _images = [
-    'https://picsum.photos/seed/picsum1/400/600',
-    'https://picsum.photos/seed/picsum2/400/600',
-    'https://picsum.photos/seed/picsum3/400/600',
-    'https://picsum.photos/seed/picsum4/400/600',
-    'https://picsum.photos/seed/picsum5/400/600',
-  ];
-
   final CardSwiperController _controller = CardSwiperController();
+
+  List<Map<String, dynamic>> offers = [];
   bool _isFetching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCards();
+  }
 
   @override
   void dispose() {
@@ -26,27 +29,57 @@ class _SwipingState extends State<Swiping> {
     super.dispose();
   }
 
-  void _openDetailsPage() {
-    Navigator.pushNamed(context, "/offer-details", arguments: {"name": "patryczek", "age": 15});
-  }
 
-  void _fetchMoreCards() async {
+  void _fetchCards() async {
     if (_isFetching) return;
 
     setState(() {
       _isFetching = true;
     });
 
-    // await Future.delayed(const Duration(seconds: 1));
-    final List<String> newCards = List.generate(
-      5,
-      (index) => 'https://picsum.photos/seed/new_picsum${index + 1}/400/600',
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final thisUserOfferDoc = await FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).get();
+    final thisUserOffer = thisUserOfferDoc.data();
 
-    setState(() {
-      _images.addAll(newCards);
+    String lookingFor = (thisUserOffer?["userType"] == "Tenant") ? "Seeker" : "Tenant";
+
+    QuerySnapshot<Map<String, dynamic>> proposedOffersQuery;
+    if (offers.isNotEmpty) {
+      proposedOffersQuery = await FirebaseFirestore.instance
+        .collection("offers")
+        .where("userType", isEqualTo: lookingFor)
+        .orderBy("uid")
+        .startAfter([offers.last["uid"]])
+        .limit(3)
+        .get();
+    } else {
+      proposedOffersQuery = await FirebaseFirestore.instance
+        .collection("offers")
+        .where("userType", isEqualTo: lookingFor)
+        .orderBy("uid")
+        .limit(3)
+        .get();
+    }
+    final proposedOffers = proposedOffersQuery.docs.map((doc) => doc.data()).toList();
+
+    if(mounted) {
+      setState(() {
+      offers.addAll(proposedOffers);
       _isFetching = false;
     });
+
+    //
+    // DEBUG
+    //
+    final t1 = await FirebaseFirestore.instance
+        .collection("offers")
+        .where("userType", isEqualTo: lookingFor)
+        .get();
+    final tt = t1.docs.map((doc) => doc.data()).toList();
+    debugPrint("all avalible offers: ${tt.length}");
+    debugPrint("now proposed offers: ${proposedOffers.length}");
+    debugPrint("now avalible offers: ${offers.length}");
+    }
   }
 
   @override
@@ -54,11 +87,12 @@ class _SwipingState extends State<Swiping> {
     return Column(
           children: [
             SizedBox(
-                height: 500,
-                width: 400,
-                child: CardSwiper(
+              height: 500,
+              width: 400,
+              child: (offers.length >= 2)
+                ? CardSwiper(
                   controller: _controller,
-                  cardsCount: _images.length,
+                  cardsCount: offers.length,
                   isLoop: false,
                   backCardOffset: const Offset(0, 35),
                   numberOfCardsDisplayed: 2,
@@ -70,9 +104,9 @@ class _SwipingState extends State<Swiping> {
                     index, 
                     horizontalThresholdPercentage, 
                     verticalThresholdPercentage
-                  ) => SwipingCard(imageUrl: _images[index], openDetailsCallback: _openDetailsPage,),
-                ),
-              
+                  ) => SwipingCard(offerData: offers[index], openDetailsCallback: _openDetailsPage,),
+                ) 
+                : Container(),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -97,18 +131,27 @@ class _SwipingState extends State<Swiping> {
         );
   }
 
+  void _openDetailsPage(Map<String, dynamic> userData) {
+    Navigator.pushNamed(context, "/offer-details", arguments: userData);
+  }
+
   bool _onSwipe(
     int previousIndex,
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
+
+
+
     if (direction == CardSwiperDirection.top) {
-      _controller.undo();
-      _openDetailsPage();
+      Future.delayed(const Duration(microseconds: 50), () {
+        _controller.undo();
+      });
+      _openDetailsPage(offers[previousIndex]);
     }
 
-    if (currentIndex == null || currentIndex == _images.length - 1) {
-      _fetchMoreCards();
+    if (currentIndex == null || currentIndex == offers.length - 1) {
+      _fetchCards();
     }
 
     debugPrint(
@@ -131,23 +174,23 @@ class _SwipingState extends State<Swiping> {
 
 
 class SwipingCard extends StatelessWidget {
-  const SwipingCard({required this.imageUrl, required this.openDetailsCallback, super.key});
+  const SwipingCard({required this.offerData, required this.openDetailsCallback, super.key});
 
-  final String imageUrl;
-  
+  final Map<String, dynamic> offerData;
+
   final Function openDetailsCallback;
   
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        openDetailsCallback();
+        openDetailsCallback(offerData);
       },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
-            image: NetworkImage(imageUrl),
+            image: NetworkImage("https://picsum.photos/seed/new_picsum0/400/600"),
             fit: BoxFit.cover,
           ),
         ),
@@ -169,7 +212,7 @@ class SwipingCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Card Example',
+                "${offerData["uid"]}",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,

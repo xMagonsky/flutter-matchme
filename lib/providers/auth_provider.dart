@@ -8,8 +8,7 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _authService.authStateChanges.listen((User? user) {
-      print("State changed:");
-      print(user);
+      debugPrint("State changed ${user?.uid}");
       _setUser(user);
     });
   }

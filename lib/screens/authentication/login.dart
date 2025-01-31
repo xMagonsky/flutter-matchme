@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SnackBar(content: Text(e.toString())),
                   );
                 } finally {
-                  if (!context.mounted) Navigator.pushNamedAndRemoveUntil(context, "/", (Route<dynamic> route) => false);
+                  if (context.mounted) Navigator.pushNamedAndRemoveUntil(context, "/", (Route<dynamic> route) => false);
                 }
               },
               child: const Text('Login'),
