@@ -36,6 +36,10 @@ class _UserSettingsState extends State<UserSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Account Settings"),
+        backgroundColor: Colors.purple[400],
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -48,9 +52,51 @@ class _UserSettingsState extends State<UserSettings> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: UpdateUserDataForm(onSubmit: (data) => onSubmit(data)),
+          child: Card(
+            color: Colors.white.withOpacity(0.9),
+            elevation: 8,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: [
+                  const Text(
+                    "Change your profile",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  UpdateUserDataForm(onSubmit: (data) => onSubmit(data))
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
+
+// Card(
+//         color: Colors.white.withOpacity(0.9),
+//         elevation: 8,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: ListView(
+//             shrinkWrap: true,
+//             children: [
+//               const Text(
+//                 "Complete registration!",
+//                 style: TextStyle(
+//                   fontSize: 22,
+//                   fontWeight: FontWeight.bold,
+//                   color: Colors.deepPurple,
+//                 ),
+//                 textAlign: TextAlign.center,
+//               ),
+//               const SizedBox(height: 16),
