@@ -45,11 +45,17 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           children: [
-            Text("Home Page - ${userData["test"]}"),
-            ElevatedButton(
-              child: const Text('Logout'),
-              onPressed: () => authProvider.logOut(),
-            ),
+            Text("Home Page - ${userData["name"]}"),
+            Row( children: [
+              ElevatedButton(
+                child: const Text('Logout'),
+                onPressed: () => authProvider.logOut(),
+              ),
+              ElevatedButton(
+                child: const Text('Settings'),
+                onPressed: () => authProvider.logOut(),
+              ),
+            ],),
             Swiping(),
           ],
         ),

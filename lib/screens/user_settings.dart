@@ -5,14 +5,14 @@ import 'package:flat_match/widgets/update_user_data_form.dart';
 import 'package:provider/provider.dart';
 
 
-class CompleteRegistration extends StatefulWidget {
-  const CompleteRegistration({super.key});
+class UserSettings extends StatefulWidget {
+  const UserSettings({super.key});
 
   @override
-  State<CompleteRegistration> createState() => _CompleteRegistrationState();
+  State<UserSettings> createState() => _UserSettingsState();
 }
 
-class _CompleteRegistrationState extends State<CompleteRegistration> {
+class _UserSettingsState extends State<UserSettings> {
 
   void onSubmit(Map<String, dynamic> userData) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -29,7 +29,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
         const SnackBar(content: Text('Registration Complete!')),
       );
 
-      Navigator.pushReplacementNamed(context, '/');
+      Navigator.pop(context);
     }
   }
 

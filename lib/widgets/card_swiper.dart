@@ -98,7 +98,7 @@ class _SwipingState extends State<Swiping> {
                   numberOfCardsDisplayed: 2,
                   allowedSwipeDirection: AllowedSwipeDirection.only(left: true, right: true, up: true),
                   onSwipe: _onSwipe,
-                  onUndo: _onUndo,
+                  // onUndo: _onUndo,
                   cardBuilder: (
                     context, 
                     index, 
@@ -154,22 +154,22 @@ class _SwipingState extends State<Swiping> {
       _fetchCards();
     }
 
-    debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
-    );
+    // debugPrint(
+    //   'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
+    // );
     return true;
   }
 
-  bool _onUndo(
-    int? previousIndex,
-    int currentIndex,
-    CardSwiperDirection direction,
-  ) {
-    debugPrint(
-      'The card $currentIndex was undod from the ${direction.name}',
-    );
-    return true;
-  }
+  // bool _onUndo(
+  //   int? previousIndex,
+  //   int currentIndex,
+  //   CardSwiperDirection direction,
+  // ) {
+  //   debugPrint(
+  //     'The card $currentIndex was undod from the ${direction.name}',
+  //   );
+  //   return true;
+  // }
 }
 
 

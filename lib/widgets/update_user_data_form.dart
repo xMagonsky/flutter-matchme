@@ -218,8 +218,8 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
                     'Please select as who would you like to interact with the app!',
-                    style: const TextStyle(
-                      color: Colors.red,
+                    style: TextStyle(
+                      color: Colors.red[900],
                       fontSize: 14,
                     ),
                     textAlign: TextAlign.center,
