@@ -35,6 +35,8 @@ class _UserSettingsState extends State<UserSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Account Settings"),
@@ -50,53 +52,47 @@ class _UserSettingsState extends State<UserSettings> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            color: Colors.white.withOpacity(0.9),
-            elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
+        child: FutureBuilder<DocumentSnapshot>(
+          future: FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final userData = snapshot.data!.data() as Map<String, dynamic>;
+
+            return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: [
-                  const Text(
-                    "Change your profile",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
-                    ),
-                    textAlign: TextAlign.center,
+              child: Card(
+                color: Colors.white.withOpacity(0.9),
+                elevation: 8,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: [
+                      const Text(
+                        "Change your profile",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      UpdateUserDataForm(
+                        currentData: userData,
+                        onSubmit: (data) => onSubmit(data),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  UpdateUserDataForm(onSubmit: (data) => onSubmit(data))
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          }
         ),
       ),
     );
   }
 }
-
-// Card(
-//         color: Colors.white.withOpacity(0.9),
-//         elevation: 8,
-//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: ListView(
-//             shrinkWrap: true,
-//             children: [
-//               const Text(
-//                 "Complete registration!",
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.deepPurple,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               const SizedBox(height: 16),

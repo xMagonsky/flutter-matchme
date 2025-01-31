@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class UpdateUserDataForm extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
+  final Map<String, dynamic>? currentData;
 
-  const UpdateUserDataForm({super.key, required this.onSubmit});
+  const UpdateUserDataForm({super.key, required this.onSubmit, this.currentData});
 
   @override
   State<UpdateUserDataForm> createState() => _CompleteRegistrationState();
@@ -11,23 +12,33 @@ class UpdateUserDataForm extends StatefulWidget {
 
 class _CompleteRegistrationState extends State<UpdateUserDataForm> {
   final _formKey = GlobalKey<FormState>();
-  // Provide default values
-  String name = 'John';
-  String surname = 'Doe';
-  String gender = 'Male';
-  int age = 25;
-  String description = 'Short description about yourself...';
-  String userType = 'Seeker';
-
-  String apartmentDescription = 'A cozy apartment...';
-  String location = 'New York';
-  String locationRange = '10 km';
-  String petPreference = 'Yes';
 
   bool _userTypeError = false;
+  
+  Map<String, dynamic> newData = {
+    "name": "",
+    "surname": "",
+    "age": "",
+    "gender": "",
+    "description": "",
+    "userType": "",
+    "apartmentDescription": "",
+    "location": "",
+    "locationRange": "",
+    "petPreference": "",
+  };
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.currentData != null) {
+      newData = widget.currentData!;
+    }
+  }
 
   void _submitForm() {
-    if (userType.isEmpty) {
+    if (newData["userType"].isEmpty) {
       setState(() {
         _userTypeError = true;
       });
@@ -37,20 +48,9 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
       });
     }
     
-    if (_formKey.currentState!.validate() && userType.isNotEmpty) {
+    if (_formKey.currentState!.validate() && newData["userType"].isNotEmpty) {
       _formKey.currentState!.save();
-      widget.onSubmit(<String, dynamic>{
-        "name": name,
-        "surname": surname,
-        "age": age,
-        "gender": gender,
-        "description": description,
-        "userType": userType,
-        "apartmentDescription": apartmentDescription,
-        "location": location,
-        "locationRange": locationRange,
-        "petPreference": petPreference,
-      });
+      widget.onSubmit(newData);
     }
   }
 
@@ -62,7 +62,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
       child: Column(
         children: [
           TextFormField(
-            initialValue: name,
+            initialValue: newData["name"],
             decoration: InputDecoration(
               labelText: 'Name',
               border: OutlineInputBorder(
@@ -71,11 +71,11 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               prefixIcon: Icon(Icons.person, color: Colors.deepPurple),
             ),
             validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
-            onSaved: (value) => name = value!,
+            onSaved: (value) => newData["name"] = value!,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            initialValue: surname,
+            initialValue: newData["surname"],
             decoration: InputDecoration(
               labelText: 'Surname',
               border: OutlineInputBorder(
@@ -84,11 +84,11 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               prefixIcon: Icon(Icons.person_outline, color: Colors.deepPurple),
             ),
             validator: (value) => value!.isEmpty ? 'Please enter your surname' : null,
-            onSaved: (value) => surname = value!,
+            onSaved: (value) => newData["surname"] = value!,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            initialValue: age.toString(),
+            initialValue: newData["age"].toString(),
             decoration: InputDecoration(
               labelText: 'Age',
               border: OutlineInputBorder(
@@ -98,11 +98,11 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
             ),
             keyboardType: TextInputType.number,
             validator: (value) => value!.isEmpty ? 'Please enter your age' : (int.tryParse(value) == null ? 'Please enter a valid number' : null),
-            onSaved: (value) => age = int.parse(value!),
+            onSaved: (value) => newData["age"] = int.parse(value!),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: gender,
+            value: (newData["gender"] == "") ? null : newData["gender"],
             decoration: InputDecoration(
               labelText: 'Gender',
               border: OutlineInputBorder(
@@ -116,12 +116,12 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                       child: Text(gender),
                     ))
                 .toList(),
-            onChanged: (value) => setState(() => gender = value!),
+            onChanged: (value) => setState(() => newData["gender"] = value!),
             validator: (value) => value == null ? 'Please select your gender' : null,
           ),
           const SizedBox(height: 12),
           TextFormField(
-            initialValue: description,
+            initialValue: newData["description"],
             decoration: InputDecoration(
               labelText: 'Description',
               border: OutlineInputBorder(
@@ -131,7 +131,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
             ),
             maxLines: 3,
             validator: (value) => value!.isEmpty ? 'Please provide a description' : null,
-            onSaved: (value) => description = value!,
+            onSaved: (value) => newData["description"] = value!,
           ),
           const SizedBox(height: 16),
           const Text(
@@ -149,15 +149,15 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
             children: [
               Flexible(
                 child: GestureDetector(
-                  onTap: () => setState(() => userType = 'Seeker'),
+                  onTap: () => setState(() => newData["userType"] = 'Seeker'),
                   child: Container(
                     height: 60,
                     width: 130, // This will act as the maximum width
                     decoration: BoxDecoration(
-                      color: userType == 'Seeker' ? Colors.deepPurple : Colors.deepPurple[100],
+                      color: newData["userType"] == 'Seeker' ? Colors.deepPurple : Colors.deepPurple[100],
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: userType == 'Seeker' ? Colors.deepPurple : Colors.grey,
+                        color: newData["userType"] == 'Seeker' ? Colors.deepPurple : Colors.grey,
                       ),
                     ),
                     child: Center(
@@ -166,7 +166,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: userType == 'Seeker' ? Colors.white : Colors.black,
+                          color: newData["userType"] == 'Seeker' ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -176,15 +176,15 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               const SizedBox(width: 16),
               Flexible(
                 child: GestureDetector(
-                  onTap: () => setState(() => userType = 'Tenant'),
+                  onTap: () => setState(() => newData["userType"] = 'Tenant'),
                   child: Container(
                     height: 60,
                     width: 130, // This will act as the maximum width
                     decoration: BoxDecoration(
-                      color: userType == 'Tenant' ? Colors.deepPurple : Colors.deepPurple[100],
+                      color: newData["userType"] == 'Tenant' ? Colors.deepPurple : Colors.deepPurple[100],
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: userType == 'Tenant' ? Colors.deepPurple : Colors.grey,
+                        color: newData["userType"] == 'Tenant' ? Colors.deepPurple : Colors.grey,
                       ),
                     ),
                     child: Center(
@@ -193,7 +193,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: userType == 'Tenant' ? Colors.white : Colors.black,
+                          color: newData["userType"] == 'Tenant' ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -215,14 +215,27 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
             ),
           const SizedBox(height: 16),
-          if (userType.isNotEmpty)
+          if (newData["userType"].isNotEmpty)
             Column(
               children: [
-                if(userType == "Tenant")
+                TextFormField(
+                  initialValue: newData["location"],
+                  decoration: InputDecoration(
+                    labelText: newData["userType"] == 'Seeker' ? 'Search location' : 'Apartament location',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    prefixIcon: Icon(Icons.location_on, color: Colors.deepPurple),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'This field is required' : null,
+                  onSaved: (value) => newData["location"] = value!,
+                ),
+                const SizedBox(height: 16),
+                if(newData["userType"] == "Tenant")
                   Column(
                     children: [
                       TextFormField(
-                        initialValue: apartmentDescription,
+                        initialValue: newData["apartmentDescription"],
                         decoration: InputDecoration(
                           labelText: 'Apartment Description',
                           border: OutlineInputBorder(
@@ -232,27 +245,14 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                         ),
                         maxLines: 3,
                         validator: (value) => value!.isEmpty ? 'This field is required' : null,
-                        onSaved: (value) => apartmentDescription = value!,
+                        onSaved: (value) => newData["apartmentDescription"] = value!,
                       ),
                       const SizedBox(height: 16),
                     ],
                   ),
-                TextFormField(
-                  initialValue: location,
-                  decoration: InputDecoration(
-                    labelText: userType == 'Seeker' ? 'Search location' : 'Apartament location',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    prefixIcon: Icon(Icons.location_on, color: Colors.deepPurple),
-                  ),
-                  validator: (value) => value!.isEmpty ? 'This field is required' : null,
-                  onSaved: (value) => location = value!,
-                ),
-                const SizedBox(height: 16),
-                if (userType == 'Seeker')
+                if (newData["userType"] == 'Seeker')
                   TextFormField(
-                    initialValue: locationRange,
+                    initialValue: newData["locationRange"],
                     decoration: InputDecoration(
                       labelText: 'Preferred Location Range',
                       border: OutlineInputBorder(
@@ -261,14 +261,14 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                       prefixIcon: Icon(Icons.map, color: Colors.deepPurple),
                     ),
                     validator: (value) => value!.isEmpty ? 'This field is required' : null,
-                    onSaved: (value) => locationRange = value!,
+                    onSaved: (value) => newData["locationRange"] = value!,
                   ),
-                if (userType == 'Seeker')
+                if (newData["userType"] == 'Seeker')
                   const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: petPreference,
+                  value: (newData["petPreference"] == "") ? null : newData["petPreference"],
                   decoration: InputDecoration(
-                    labelText: userType == 'Seeker' ? 'Do you have a pet?' : 'Do you accept pets?',
+                    labelText: newData["userType"] == 'Seeker' ? 'Do you have a pet?' : 'Do you accept pets?',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -280,7 +280,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
                             child: Text(question),
                           ))
                       .toList(),
-                  onChanged: (value) => setState(() => petPreference = value!),
+                  onChanged: (value) => setState(() => newData["petPreference"] = value!),
                   validator: (value) => value == null ? 'Please select your gender' : null,
                 ),
                 const SizedBox(height: 16),
@@ -298,7 +298,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
               ),
             ),
             child: const Text(
-              'Submit',
+              'Save',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
