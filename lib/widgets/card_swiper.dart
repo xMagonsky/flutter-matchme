@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flat_match/providers/auth_provider.dart';
+import 'package:flat_match/widgets/match_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:provider/provider.dart';
@@ -135,14 +136,7 @@ class _SwipingState extends State<Swiping> {
     Navigator.pushNamed(context, "/offer-details", arguments: userData);
   }
 
-  bool _onSwipe(
-    int previousIndex,
-    int? currentIndex,
-    CardSwiperDirection direction,
-  ) {
-
-
-
+  bool _onSwipe(int previousIndex, int? currentIndex, CardSwiperDirection direction) { 
     if (direction == CardSwiperDirection.top) {
       Future.delayed(const Duration(microseconds: 50), () {
         _controller.undo();
@@ -150,26 +144,49 @@ class _SwipingState extends State<Swiping> {
       _openDetailsPage(offers[previousIndex]);
     }
 
+    if (direction == CardSwiperDirection.right) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      DocumentReference docRef = FirebaseFirestore.instance.collection("offers").doc(authProvider.uid);
+
+      // add user's accepted list
+      docRef.set({
+        "accepted": FieldValue.arrayUnion([offers[previousIndex]["uid"]]),
+      }, SetOptions(merge: true));
+
+      // check for a match
+      Future(() async {
+        final thisOfferDoc = await FirebaseFirestore.instance.collection("offers").doc(offers[previousIndex]["uid"]).get();
+        final thisOffer = thisOfferDoc.data();
+        if (thisOffer != null && thisOffer.containsKey("accepted")) {
+          List acceptedList = thisOffer["accepted"];
+          if (acceptedList.contains(authProvider.uid)) {
+            // its a match!
+            if(mounted) {
+              showDialog(
+                context: context,
+                builder: (_) => Dialog(
+                  backgroundColor: Colors.transparent,
+                  child: MatchPopup(),
+                ),
+              );
+            }
+            FirebaseFirestore.instance.collection("users").doc(authProvider.uid).set({
+              "chats": FieldValue.arrayUnion([offers[previousIndex]["uid"]]),
+            }, SetOptions(merge: true));
+            FirebaseFirestore.instance.collection("users").doc(offers[previousIndex]["uid"]).set({
+              "chats": FieldValue.arrayUnion([authProvider.uid]),
+            }, SetOptions(merge: true));
+          }
+        }
+      });
+    }
+
     if (currentIndex == null || currentIndex == offers.length - 1) {
       _fetchCards();
     }
-
-    // debugPrint(
-    //   'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
-    // );
     return true;
   }
 
-  // bool _onUndo(
-  //   int? previousIndex,
-  //   int currentIndex,
-  //   CardSwiperDirection direction,
-  // ) {
-  //   debugPrint(
-  //     'The card $currentIndex was undod from the ${direction.name}',
-  //   );
-  //   return true;
-  // }
 }
 
 
