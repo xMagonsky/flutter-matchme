@@ -1,9 +1,11 @@
+import 'package:flat_match/widgets/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 
+import 'package:flat_match/screens/chats.dart';
 import 'package:flat_match/screens/authentication/signup.dart';
 import 'package:flat_match/screens/authentication/login.dart';
 import 'package:flat_match/screens/homepage.dart';
@@ -46,6 +48,7 @@ class FlatMatch extends StatelessWidget {
             "/signup": (context) => const Signup(),
             "/complete-registration": (context) => const CompleteRegistration(),
             "/user-settings": (context) => const UserSettings(),
+            "/chats": (context) => const Chats(),
           },
           // Dynamic route handler:
           onGenerateRoute: (settings) {
@@ -55,6 +58,15 @@ class FlatMatch extends StatelessWidget {
               return MaterialPageRoute(
                 builder: (context) => OfferDetails(
                   userInfo: userInfo,
+                ),
+              );
+            }
+            if (settings.name == '/chat') {
+              final chatterData = settings.arguments as Map<String, dynamic>;
+
+              return MaterialPageRoute(
+                builder: (context) => Chat(
+                  chatterData: chatterData,
                 ),
               );
             }

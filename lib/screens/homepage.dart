@@ -54,6 +54,10 @@ class _HomePageState extends State<HomePage> {
                 child: const Text('Settings'),
                 onPressed: () => Navigator.pushNamed(context, "/user-settings"),
               ),
+              ElevatedButton(
+                child: const Text('Chats'),
+                onPressed: () => Navigator.pushNamed(context, "/chats"),
+              ),
             ],),
             Swiping(),
           ],
