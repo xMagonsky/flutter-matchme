@@ -33,7 +33,7 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
     super.initState();
 
     if (widget.currentData != null) {
-      newData = widget.currentData!;
+      newData = Map.from(widget.currentData!);
     }
   }
 
@@ -50,6 +50,11 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
     
     if (_formKey.currentState!.validate() && newData["userType"].isNotEmpty) {
       _formKey.currentState!.save();
+      if (widget.currentData != null) {
+        if (newData["userType"] != widget.currentData!["userType"]) {
+          newData["accepted"] = [];
+        }
+      }
       widget.onSubmit(newData);
     }
   }

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flat_match/providers/auth_provider.dart';
 import 'package:flat_match/widgets/match_popup.dart';
@@ -14,6 +17,8 @@ class Swiping extends StatefulWidget {
 
 class _SwipingState extends State<Swiping> {
   final CardSwiperController _controller = CardSwiperController();
+  late final StreamSubscription<DocumentSnapshot> _subscription;
+  String? _previousDataJson;
 
   List<Map<String, dynamic>> offers = [];
   bool _isFetching = false;
@@ -21,13 +26,35 @@ class _SwipingState extends State<Swiping> {
   @override
   void initState() {
     super.initState();
-    _fetchCards();
+    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    _subscription = FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).snapshots().listen((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data();
+
+        if (data != null) {
+          final Map<String, dynamic> newDataIgnoringAccepted = {...data};
+          
+          // Remove the 'accepted' field - dont want to update cards on change
+          newDataIgnoringAccepted.remove('accepted');
+          
+          final currentDataJson = jsonEncode(newDataIgnoringAccepted);
+
+          if (_previousDataJson != currentDataJson) {
+            offers = [];
+            _fetchCards();
+            _previousDataJson = currentDataJson;
+          }
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
+    _controller.dispose();
+    _subscription.cancel();
   }
 
 
@@ -44,23 +71,21 @@ class _SwipingState extends State<Swiping> {
 
     String lookingFor = (thisUserOffer?["userType"] == "Tenant") ? "Seeker" : "Tenant";
 
-    QuerySnapshot<Map<String, dynamic>> proposedOffersQuery;
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection("offers")
+        .where("userType", isEqualTo: lookingFor)
+        .orderBy("uid")
+        .limit(3);
+    
     if (offers.isNotEmpty) {
-      proposedOffersQuery = await FirebaseFirestore.instance
-        .collection("offers")
-        .where("userType", isEqualTo: lookingFor)
-        .orderBy("uid")
-        .startAfter([offers.last["uid"]])
-        .limit(3)
-        .get();
-    } else {
-      proposedOffersQuery = await FirebaseFirestore.instance
-        .collection("offers")
-        .where("userType", isEqualTo: lookingFor)
-        .orderBy("uid")
-        .limit(3)
-        .get();
+        query = query.startAfter([offers.last["uid"]]);
     }
+
+    if (thisUserOffer?["accepted"].isNotEmpty) {
+      query = query.where("uid", whereNotIn: thisUserOffer?["accepted"]);
+    }
+    
+
+    QuerySnapshot<Map<String, dynamic>> proposedOffersQuery = await query.get();
     final proposedOffers = proposedOffersQuery.docs.map((doc) => doc.data()).toList();
 
     if(mounted) {

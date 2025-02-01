@@ -37,7 +37,7 @@ class FlatMatch extends StatelessWidget {
           title: "Flat Match",
           theme: ThemeData(
             useMaterial3: true,
-            primarySwatch: Colors.red,
+            primarySwatch: Colors.purple,
           ),
           home: authProvider.isLoggedIn ? const HomePage() : const LoginScreen(),
           routes: {

@@ -84,50 +84,53 @@ class _MatchPopupState extends State<MatchPopup> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Sparkles behind the container
-          CustomPaint(
-            size: const Size(400, 400),
-            painter: _SparklesPainter(
-              sparkles: _sparkles,
-              expansion: _sparkleExpansion.value,
-              fade: _sparkleFade.value,
+    return GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Sparkles behind the container
+            CustomPaint(
+              size: const Size(400, 400),
+              painter: _SparklesPainter(
+                sparkles: _sparkles,
+                expansion: _sparkleExpansion.value,
+                fade: _sparkleFade.value,
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(24.0),
-            decoration: BoxDecoration(
-              color: Colors.purple,
-              borderRadius: BorderRadius.circular(16.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  offset: Offset(0, 4),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: const Text(
-              "It's a match!",
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    offset: Offset(2, 2),
-                    blurRadius: 3,
-                    color: Colors.black38,
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(0, 4),
+                    blurRadius: 8,
+                    spreadRadius: 1,
                   ),
                 ],
               ),
+              child: const Text(
+                "It's a match!",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(2, 2),
+                      blurRadius: 3,
+                      color: Colors.black38,
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
