@@ -76,23 +76,3 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
     );
   }
 }
-
-// Card(
-//         color: Colors.white.withOpacity(0.9),
-//         elevation: 8,
-//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: ListView(
-//             shrinkWrap: true,
-//             children: [
-//               const Text(
-//                 "Complete registration!",
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.deepPurple,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               const SizedBox(height: 16),

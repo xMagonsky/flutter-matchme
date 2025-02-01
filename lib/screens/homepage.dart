@@ -41,7 +41,6 @@ class _HomePageState extends State<HomePage> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Home Page"), automaticallyImplyLeading: false),
       body: Center(
         child: Column(
           children: [
