@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       userData = data;
     });
-  }
+}
 
   @override
   void initState() {

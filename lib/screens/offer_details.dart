@@ -1,28 +1,43 @@
+import 'package:flat_match/widgets/apartament_info.dart';
+import 'package:flat_match/widgets/person_info.dart';
 import 'package:flutter/material.dart';
 
 
 class OfferDetails extends StatelessWidget {
-  final Map<String, dynamic> userInfo;
+  final Map<String, dynamic> userData;
 
-  const OfferDetails({required this.userInfo, super.key});
-  
+  const OfferDetails({super.key, required this.userData});
+
   @override
   Widget build(BuildContext context) {
+    final String userType = userData['userType'];
+    
     return Scaffold(
-      appBar: AppBar(title: const Text("Details page")),
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Back"),
-            ),
-            Text(userInfo.toString()),
-          ],
+      appBar: AppBar(
+        title: const Text("Details"),
+        backgroundColor: Colors.purple[400],
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple, Colors.deepPurpleAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
-      )
+        child: Center( 
+          child: userType == 'Seeker'
+            ? PersonInfo(userData: userData)
+            : PageView(
+              children: [
+                PersonInfo(userData: userData),
+                ApartmentInfo(userData: userData),
+              ],
+            )
+        )
+      ) 
     );
   }
 }

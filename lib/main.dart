@@ -57,7 +57,7 @@ class FlatMatch extends StatelessWidget {
 
               return MaterialPageRoute(
                 builder: (context) => OfferDetails(
-                  userInfo: userInfo,
+                  userData: userInfo,
                 ),
               );
             }
