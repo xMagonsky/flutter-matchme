@@ -131,7 +131,7 @@ class _LocationRangeMapState extends State<LocationRangeMap> {
               Text('Range: ${_rangeInMeters.toInt()} meters'),
               Slider(
                 value: _rangeInMeters,
-                min: 100,
+                min: 0,
                 max: 10000,
                 label: _rangeInMeters.toInt().toString(),
                 onChanged: (value) {

@@ -5,6 +5,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 
+
+class UserFiltersScreen extends StatelessWidget{
+  const UserFiltersScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Filters"),
+        backgroundColor: Colors.purple[400],
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple, Colors.deepPurpleAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: UserFilters(),
+      )
+    );
+  }
+}
+
+
 class UserFilters extends StatefulWidget {
   const UserFilters({super.key});
 
@@ -23,7 +51,7 @@ class _UserFiltersState extends State<UserFilters> {
         const SnackBar(content: Text('Filters updated!')),
       );
 
-      Navigator.pop(context);
+      (MediaQuery.of(context).size.width > 1000) ? "" : Navigator.pop(context);
     }
   }
 
@@ -31,59 +59,42 @@ class _UserFiltersState extends State<UserFilters> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Filters"),
-        backgroundColor: Colors.purple[400],
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.purple, Colors.deepPurpleAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: FutureBuilder<DocumentSnapshot>(
-          future: FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).get(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            final userData = snapshot.data!.data() as Map<String, dynamic>;
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
 
-            return Padding(
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            color: Colors.white.withOpacity(0.9),
+            elevation: 8,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Card(
-                color: Colors.white.withOpacity(0.9),
-                elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView(
-                    children: [
-                      const Text(
-                        "Change your filters",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      UpdateUserFilterForm(onSubmit: onSubmit, currentData: userData,)
-                    ],
+              child: ListView(
+                children: [
+                  const Text(
+                    "Change your filters",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  UpdateUserFilterForm(onSubmit: onSubmit, currentData: userData,)
+                ],
               ),
-            );
-          }
-        ),
-      )
+            ),
+          ),
+        );
+      }
     );
   }
 }

@@ -28,7 +28,7 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chat with ${widget.chatterData.toString()}")),
+      appBar: AppBar(title: Text("Chat")),
       body: Column(
         children: [
           Expanded(

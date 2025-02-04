@@ -49,8 +49,8 @@ class FlatMatch extends StatelessWidget {
             "/signup": (context) => const Signup(),
             "/complete-registration": (context) => const CompleteRegistration(),
             "/user-settings": (context) => const UserSettings(),
-            "/chats": (context) => const Chats(),
-            "/user-filters": (context) => const UserFilters(),
+            "/chats": (context) => const ChatsScreen(),
+            "/user-filters": (context) => const UserFiltersScreen(),
           },
           // Dynamic route handler:
           onGenerateRoute: (settings) {

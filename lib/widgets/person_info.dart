@@ -34,7 +34,7 @@ class PersonInfo extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50, // Adjust the radius as needed
                             backgroundColor: Colors.grey.shade200,
-                            backgroundImage: NetworkImage("https://magonsky.scay.net/img/room1.jpg"),
+                            backgroundImage: NetworkImage(userData["image"]),
                           ),
                         ),
                         Text(

@@ -129,10 +129,11 @@ class _SwipingState extends State<Swiping> {
     return Column(
           children: [
             SizedBox(
-              height: 500,
-              width: 400,
+              height: MediaQuery.of(context).size.height - 210,
+              width: 370,
               child: (offers.isNotEmpty)
                 ? CardSwiper(
+                  padding: EdgeInsets.all(10),
                   controller: _controller,
                   cardsCount: offers.length,
                   isLoop: false,
@@ -140,7 +141,6 @@ class _SwipingState extends State<Swiping> {
                   numberOfCardsDisplayed: (offers.length == 1) ? 1 : 2,
                   allowedSwipeDirection: AllowedSwipeDirection.only(left: true, right: true, up: true),
                   onSwipe: _onSwipe,
-                  // onUndo: _onUndo,
                   cardBuilder: (
                     context, 
                     index, 
@@ -150,24 +150,22 @@ class _SwipingState extends State<Swiping> {
                 ) 
                 : Container(),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FloatingActionButton(
-                    heroTag: "swipeLeft",
-                    onPressed: () => _controller.swipe(CardSwiperDirection.left),
-                    child: const Icon(Icons.keyboard_arrow_left),
-                  ),
-                  FloatingActionButton(
-                    heroTag: "swipeRight",
-                    onPressed: () =>
-                        _controller.swipe(CardSwiperDirection.right),
-                    child: const Icon(Icons.keyboard_arrow_right),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  heroTag: "swipeLeft",
+                  onPressed: () => _controller.swipe(CardSwiperDirection.left),
+                  child: const Icon(Icons.keyboard_arrow_left),
+                ),
+                FloatingActionButton(
+                  heroTag: "swipeRight",
+                  onPressed: () =>
+                      _controller.swipe(CardSwiperDirection.right),
+                  child: const Icon(Icons.keyboard_arrow_right),
+                ),
+              ],
             ),
           ],
         );
@@ -194,32 +192,48 @@ class _SwipingState extends State<Swiping> {
         "accepted": FieldValue.arrayUnion([offers[previousIndex]["uid"]]),
       }, SetOptions(merge: true));
 
+      final off = [];
+      off.addAll(offers);
+
       // check for a match
-      Future(() async {
-        final thisOfferDoc = await FirebaseFirestore.instance.collection("offers").doc(offers[previousIndex]["uid"]).get();
-        final thisOffer = thisOfferDoc.data();
-        if (thisOffer != null && thisOffer.containsKey("accepted")) {
-          List acceptedList = thisOffer["accepted"];
-          if (acceptedList.contains(authProvider.uid)) {
-            // its a match!
-            if(mounted) {
-              showDialog(
-                context: context,
-                builder: (_) => Dialog(
-                  backgroundColor: Colors.transparent,
-                  child: MatchPopup(),
-                ),
-              );
-            }
-            FirebaseFirestore.instance.collection("users").doc(authProvider.uid).set({
-              "chats": FieldValue.arrayUnion([offers[previousIndex]["uid"]]),
-            }, SetOptions(merge: true));
-            FirebaseFirestore.instance.collection("users").doc(offers[previousIndex]["uid"]).set({
-              "chats": FieldValue.arrayUnion([authProvider.uid]),
-            }, SetOptions(merge: true));
+      FirebaseFirestore.instance
+        .collection("offers")
+        .doc(offers[previousIndex]["uid"])
+        .get()
+        .then((thisOfferDoc) {
+      final thisOffer = thisOfferDoc.data();
+      if (thisOffer != null && thisOffer.containsKey("accepted")) {
+        List acceptedList = thisOffer["accepted"];
+        if (acceptedList.contains(authProvider.uid)) {
+          // It's a match!
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (_) => Dialog(
+                backgroundColor: Colors.transparent,
+                child: MatchPopup(),
+              ),
+            );
           }
+          FirebaseFirestore.instance
+              .collection("users")
+              .doc(authProvider.uid)
+              .set({
+            "chats": FieldValue.arrayUnion([off[previousIndex]["uid"]]),
+          }, SetOptions(merge: true));
+
+          FirebaseFirestore.instance
+              .collection("users")
+              .doc(off[previousIndex]["uid"])
+              .set({
+            "chats": FieldValue.arrayUnion([authProvider.uid]),
+          }, SetOptions(merge: true));
         }
-      });
+      }
+    }).catchError((error) {
+      // Handle any errors if needed
+      print("Error fetching offer document: $error");
+    });
     }
 
     if (currentIndex == null || currentIndex == offers.length - 1) {

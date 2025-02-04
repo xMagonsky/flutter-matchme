@@ -35,7 +35,7 @@ class ApartmentInfo extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50, // Adjust the radius as needed
                             backgroundColor: Colors.grey.shade200,
-                            backgroundImage: NetworkImage("https://magonsky.scay.net/img/room1.jpg"),
+                            backgroundImage: NetworkImage(userData["apartmentImage"]),
                           ),
                         ),
                         Text(
@@ -55,6 +55,10 @@ class ApartmentInfo extends StatelessWidget {
                             OtherInfoItem(
                               icon: Icons.pets,
                               value: userData["petPreference"],
+                            ),
+                            OtherInfoItem(
+                              icon: Icons.monetization_on_outlined,
+                              value: userData["rentPrice"].toStringAsFixed(2),
                             ),
                           ],
                         ),
@@ -83,7 +87,7 @@ class ApartmentInfo extends StatelessWidget {
                           ),
                           child: FlutterMap(
                             options: MapOptions(
-                              initialCenter: LatLng(userData["apartamentLocation"].latitude, userData["apartamentLocation"].longitude), // Default coordinates
+                              initialCenter: LatLng(userData["apartamentLocation"].latitude, userData["apartamentLocation"].longitude),
                               initialZoom: 13.0,
                             ),
                             children: [
