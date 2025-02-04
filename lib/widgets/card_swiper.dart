@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flat_match/providers/auth_provider.dart';
@@ -18,7 +17,7 @@ class Swiping extends StatefulWidget {
 class _SwipingState extends State<Swiping> {
   final CardSwiperController _controller = CardSwiperController();
   late final StreamSubscription<DocumentSnapshot> _subscription;
-  String? _previousDataJson;
+  Map<String, dynamic>? _previousDataJson;
 
   List<Map<String, dynamic>> offers = [];
   bool _isFetching = false;
@@ -38,10 +37,11 @@ class _SwipingState extends State<Swiping> {
           // Remove the 'accepted' field - dont want to update cards on change
           newDataIgnoringAccepted.remove('accepted');
           
-          final currentDataJson = jsonEncode(newDataIgnoringAccepted);
+          final currentDataJson = newDataIgnoringAccepted;
 
           if (_previousDataJson != currentDataJson) {
             offers = [];
+            debugPrint("generating cards");
             _fetchCards();
             _previousDataJson = currentDataJson;
           }
@@ -72,16 +72,18 @@ class _SwipingState extends State<Swiping> {
     String lookingFor = (thisUserOffer?["userType"] == "Tenant") ? "Seeker" : "Tenant";
 
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection("offers")
-        .where("userType", isEqualTo: lookingFor)
-        .orderBy("uid")
-        .limit(3);
+      .where("userType", isEqualTo: lookingFor)
+      .orderBy("uid")
+      .limit(3);
     
     if (offers.isNotEmpty) {
         query = query.startAfter([offers.last["uid"]]);
     }
 
-    if (thisUserOffer?["accepted"].isNotEmpty) {
-      query = query.where("uid", whereNotIn: thisUserOffer?["accepted"]);
+    if (thisUserOffer?["accepted"] != null) {  
+      if (thisUserOffer?["accepted"].isNotEmpty) {
+        query = query.where("uid", whereNotIn: thisUserOffer?["accepted"]);
+      }
     }
     
 
@@ -232,7 +234,7 @@ class SwipingCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
-            image: NetworkImage("https://picsum.photos/seed/new_picsum0/400/600"),
+            image: NetworkImage(((offerData["userType"] == "Tenant") ? offerData["apartamentImage"] : offerData["image"]) ?? "https://magonsky.scay.net/img/no-img.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -254,11 +256,18 @@ class SwipingCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "${offerData["uid"]}",
+                "${ (offerData["userType"] == "Tenant") ? offerData["apartamentAddress"] : offerData["name"] + " " +  offerData["surname"] }",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(2, 2),
+                      blurRadius: 3,
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
               ),
             ),

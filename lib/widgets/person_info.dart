@@ -64,14 +64,13 @@ class PersonInfo extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Container(
-                          width: 400,
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            userData["apartmentDescription"],
+                            userData["description"],
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),

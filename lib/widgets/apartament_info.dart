@@ -11,8 +11,6 @@ class ApartmentInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String location = userData["location"];
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -30,6 +28,7 @@ class ApartmentInfo extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center(
@@ -40,7 +39,7 @@ class ApartmentInfo extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          location,
+                          userData["apartamentAddress"],
                           style: const TextStyle(
                             fontSize: 24, 
                             fontWeight: FontWeight.bold,
@@ -60,16 +59,17 @@ class ApartmentInfo extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        Container(
-                          width: 400,
+                        Container( 
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            userData["description"],
+                            userData["apartmentDescription"],
                             style: const TextStyle(fontSize: 16),
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -88,25 +88,25 @@ class ApartmentInfo extends StatelessWidget {
                             ),
                             children: [
                               TileLayer(
-                                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                subdomains: ['a', 'b', 'c'],
+                                urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                               ),
                               MarkerLayer(
                                 markers: [
                                   Marker(
-                                    width: 80.0,
-                                    height: 80.0,
+                                    width: 100,
+                                    height: 100,
+                                    alignment: Alignment(0, -0.30),
                                     point: LatLng(51.5, -0.09),
                                     child: const Icon(
                                       Icons.location_pin,
                                       color: Colors.purple,
+                                      size: 40,
                                       shadows: [
                                         Shadow(
                                           color: Colors.black,
                                           blurRadius: 15.0,
                                         ),
                                       ],
-                                      size: 40,
                                     ),
                                   ),
                                 ],
