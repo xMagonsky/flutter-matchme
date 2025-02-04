@@ -32,10 +32,14 @@ class ApartmentInfo extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center(
-                          child: CircleAvatar(
-                            radius: 50, // Adjust the radius as needed
-                            backgroundColor: Colors.grey.shade200,
-                            backgroundImage: NetworkImage(userData["apartmentImage"]),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(
+                              userData["apartmentImage"],
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Text(

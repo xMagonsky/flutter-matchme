@@ -36,7 +36,8 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SafeArea(
+        child: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -73,6 +74,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
           ),
         ),
       ),
+      )
     );
   }
 }

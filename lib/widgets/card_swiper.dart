@@ -106,8 +106,11 @@ class _SwipingState extends State<Swiping> {
 
     if(mounted) {
       setState(() {
-      offers.addAll(proposedOffers);
-      _isFetching = false;
+        if (proposedOffers.isNotEmpty) {
+          offersEnd = false;
+        }
+        offers.addAll(proposedOffers);
+        _isFetching = false;
     });
 
     //
@@ -123,15 +126,16 @@ class _SwipingState extends State<Swiping> {
     debugPrint("now avalible offers: ${offers.length}");
     }
   }
+  bool offersEnd = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height - 210,
+              height: MediaQuery.of(context).size.height - 235,
               width: 370,
-              child: (offers.isNotEmpty)
+              child: (offers.isNotEmpty && !offersEnd)
                 ? CardSwiper(
                   padding: EdgeInsets.all(10),
                   controller: _controller,
@@ -141,6 +145,11 @@ class _SwipingState extends State<Swiping> {
                   numberOfCardsDisplayed: (offers.length == 1) ? 1 : 2,
                   allowedSwipeDirection: AllowedSwipeDirection.only(left: true, right: true, up: true),
                   onSwipe: _onSwipe,
+                  onEnd: () {
+                    setState(() {
+                      offersEnd = true;
+                    });
+                  },
                   cardBuilder: (
                     context, 
                     index, 
@@ -148,7 +157,9 @@ class _SwipingState extends State<Swiping> {
                     verticalThresholdPercentage
                   ) => SwipingCard(offerData: offers[index], openDetailsCallback: _openDetailsPage,),
                 ) 
-                : Container(),
+                : Center(
+                  child: offersEnd ? Text("Unfortunately there are no more offers to view.\nCome back later!", textAlign: TextAlign.center,) : Text("")
+                )
             ),
             const SizedBox(height: 16),
             Row(
@@ -231,7 +242,6 @@ class _SwipingState extends State<Swiping> {
         }
       }
     }).catchError((error) {
-      // Handle any errors if needed
       print("Error fetching offer document: $error");
     });
     }
@@ -262,7 +272,7 @@ class SwipingCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
-            image: NetworkImage(((offerData["userType"] == "Tenant") ? offerData["apartamentImage"] : offerData["image"]) ?? "https://magonsky.scay.net/img/no-img.jpg"),
+            image: NetworkImage((offerData["userType"] == "Tenant") ? offerData["apartmentImage"] : offerData["image"]),
             fit: BoxFit.cover,
           ),
         ),

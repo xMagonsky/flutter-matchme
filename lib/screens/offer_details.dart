@@ -32,8 +32,8 @@ class OfferDetails extends StatelessWidget {
             ? PersonInfo(userData: userData)
             : PageView(
               children: [
-                PersonInfo(userData: userData),
                 ApartmentInfo(userData: userData),
+                PersonInfo(userData: userData),
               ],
             )
         )

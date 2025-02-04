@@ -13,7 +13,7 @@ class ChatsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Filters"),
+        title: const Text("Chats"),
         backgroundColor: Colors.purple[400],
       ),
       body: Container(
