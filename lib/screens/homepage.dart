@@ -1,4 +1,3 @@
-import 'package:flat_match/screens/user_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +34,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getUserData();
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    FirebaseFirestore.instance.collection("offers").doc(authProvider.uid).snapshots().listen((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data();
+        
+      }
+    });
   }
 
   @override
@@ -62,8 +69,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   child: const Text('Filters'),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute<void>( builder: (BuildContext context) => const UserFilters(),),
-                  ),
+                  onPressed: () => Navigator.pushNamed(context, "/user-filters"),
                 ),
               ],
             ),

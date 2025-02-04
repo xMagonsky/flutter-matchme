@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flat_match/providers/auth_provider.dart';
+import 'package:flat_match/utils/geopoint_range.dart';
 import 'package:flat_match/widgets/match_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -85,6 +86,19 @@ class _SwipingState extends State<Swiping> {
         query = query.where("uid", whereNotIn: thisUserOffer?["accepted"]);
       }
     }
+
+    // add filters if a seeker
+    if (thisUserOffer?["userType"] == "Seeker") {
+      if (thisUserOffer?["petPreference"] == "Yes") {
+        query = query.where("petPreference", isEqualTo: "Yes");
+      }
+      query = query.where("rentPrice", isLessThanOrEqualTo: thisUserOffer?["rentPriceLimit"]);
+
+      final geo = geopointRange(thisUserOffer?["searchLocation"], thisUserOffer?["searchRange"]);
+      query = query.where("apartamentLocation", isGreaterThan: geo["southWest"]);
+      query = query.where("apartamentLocation", isLessThan: geo["northEast"]);
+      print("hello");
+    }
     
 
     QuerySnapshot<Map<String, dynamic>> proposedOffersQuery = await query.get();
@@ -117,13 +131,13 @@ class _SwipingState extends State<Swiping> {
             SizedBox(
               height: 500,
               width: 400,
-              child: (offers.length >= 2)
+              child: (offers.isNotEmpty)
                 ? CardSwiper(
                   controller: _controller,
                   cardsCount: offers.length,
                   isLoop: false,
                   backCardOffset: const Offset(0, 35),
-                  numberOfCardsDisplayed: 2,
+                  numberOfCardsDisplayed: (offers.length == 1) ? 1 : 2,
                   allowedSwipeDirection: AllowedSwipeDirection.only(left: true, right: true, up: true),
                   onSwipe: _onSwipe,
                   // onUndo: _onUndo,

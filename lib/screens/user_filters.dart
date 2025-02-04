@@ -32,7 +32,10 @@ class _UserFiltersState extends State<UserFilters> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Filters"),
+        backgroundColor: Colors.purple[400],
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
