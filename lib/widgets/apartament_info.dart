@@ -83,7 +83,7 @@ class ApartmentInfo extends StatelessWidget {
                           ),
                           child: FlutterMap(
                             options: MapOptions(
-                              initialCenter: LatLng(51.5, -0.09), // Default coordinates
+                              initialCenter: LatLng(userData["apartamentLocation"].latitude, userData["apartamentLocation"].longitude), // Default coordinates
                               initialZoom: 13.0,
                             ),
                             children: [
@@ -96,7 +96,7 @@ class ApartmentInfo extends StatelessWidget {
                                     width: 100,
                                     height: 100,
                                     alignment: Alignment(0, -0.30),
-                                    point: LatLng(51.5, -0.09),
+                                    point: LatLng(userData["apartamentLocation"].latitude, userData["apartamentLocation"].longitude),
                                     child: const Icon(
                                       Icons.location_pin,
                                       color: Colors.purple,

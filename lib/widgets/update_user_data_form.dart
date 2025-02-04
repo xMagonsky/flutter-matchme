@@ -82,7 +82,6 @@ class _CompleteRegistrationState extends State<UpdateUserDataForm> {
   Timer? _debounce;
 
   void _onDebounceCompleted(String value) async {
-    print("User stopped typing. Final value: $value");
     final url = Uri.parse("https://nominatim.openstreetmap.org/search?format=jsonv2&q=$value");
     final response = await http.get(url);
     final data = jsonDecode(response.body);

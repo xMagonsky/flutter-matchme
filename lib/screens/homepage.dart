@@ -1,3 +1,4 @@
+import 'package:flat_match/screens/user_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -45,20 +46,27 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Text("Home Page - ${userData["name"]}"),
-            Row( children: [
-              ElevatedButton(
-                child: const Text('Logout'),
-                onPressed: () => authProvider.logOut(),
-              ),
-              ElevatedButton(
-                child: const Text('Settings'),
-                onPressed: () => Navigator.pushNamed(context, "/user-settings"),
-              ),
-              ElevatedButton(
-                child: const Text('Chats'),
-                onPressed: () => Navigator.pushNamed(context, "/chats"),
-              ),
-            ],),
+            Row(
+              children: [
+                ElevatedButton(
+                  child: const Text('Logout'),
+                  onPressed: () => authProvider.logOut(),
+                ),
+                ElevatedButton(
+                  child: const Text('Settings'),
+                  onPressed: () => Navigator.pushNamed(context, "/user-settings"),
+                ),
+                ElevatedButton(
+                  child: const Text('Chats'),
+                  onPressed: () => Navigator.pushNamed(context, "/chats"),
+                ),
+                ElevatedButton(
+                  child: const Text('Filters'),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute<void>( builder: (BuildContext context) => const UserFilters(),),
+                  ),
+                ),
+              ],
+            ),
             Swiping(),
           ],
         ),

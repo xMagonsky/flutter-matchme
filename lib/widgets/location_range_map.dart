@@ -18,7 +18,7 @@ class LocationRangeMap extends StatefulWidget {
   final LatLng initialLocation;
   final double initialRange;
 
-  const LocationRangeMap({super.key, required this.onChanged, this.initialLocation = const LatLng(51.5, -0.09), this.initialRange = 1000});
+  const LocationRangeMap({super.key, required this.onChanged, this.initialLocation = const LatLng(45.468, 9.182), this.initialRange = 1000});
 
   @override
   State<LocationRangeMap> createState() => _LocationRangeMapState();
@@ -68,7 +68,6 @@ class _LocationRangeMapState extends State<LocationRangeMap> {
         Container(
           height: 250,
           width: 600,
-          margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(8),
