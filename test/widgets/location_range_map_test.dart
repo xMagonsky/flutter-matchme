@@ -54,8 +54,6 @@ void main() {
     final sliderFinder = find.byType(Slider);
     expect(sliderFinder, findsOneWidget);
 
-    Slider slider = tester.widget(sliderFinder);
-
     await tester.tapAt(tester.getCenter(sliderFinder));
     await tester.pumpAndSettle();
 
